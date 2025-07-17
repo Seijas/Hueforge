@@ -7,7 +7,7 @@ class Config:
     DEFAULT_MAX_HEIGHT = 5.0  # mm
 
     # Configuración de imagen
-    DEFAULT_TARGET_WIDTH = 100  # píxeles
+    DEFAULT_TARGET_WIDTH_MM = 100  # ancho objetivo en milímetros
     DEFAULT_NUM_COLORS = 4  # número de colores a extraer
 
     # Configuración de escala
