@@ -92,9 +92,8 @@ class HueForgeConverter:
             # Crear máscara para esta altura
             mask = (height_map == height)
 
-            # Encontrar el color correspondiente
-            color_idx = np.where(np.any(mask))[0]
-            if len(color_idx) > 0:
+            # Verificar que exista al menos un píxel con esta altura
+            if np.any(mask):
                 # Obtener el color más común para esta altura
                 color_indices = color_map[mask]
                 if len(color_indices) > 0:
