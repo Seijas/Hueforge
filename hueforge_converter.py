@@ -5,6 +5,7 @@ from sklearn.cluster import KMeans
 import struct
 import os
 from pathlib import Path
+from config import Config
 
 
 class HueForgeConverter:
@@ -21,7 +22,7 @@ class HueForgeConverter:
         self.layer_height = layer_height
         self.max_height = max_height
 
-    def load_image(self, image_path, target_width=100):
+    def load_image(self, image_path, target_width_px=100):
         """Carga y redimensiona la imagen"""
         try:
             img = Image.open(image_path)
@@ -31,8 +32,8 @@ class HueForgeConverter:
 
             # Redimensionar manteniendo proporción
             aspect_ratio = img.height / img.width
-            target_height = int(target_width * aspect_ratio)
-            img = img.resize((target_width, target_height), Image.Resampling.LANCZOS)
+            target_height = int(target_width_px * aspect_ratio)
+            img = img.resize((target_width_px, target_height), Image.Resampling.LANCZOS)
 
             return np.array(img)
         except Exception as e:
@@ -264,15 +265,26 @@ class HueForgeConverter:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
         plt.show()
 
-    def process_image(self, image_path, output_dir, num_colors=8, target_width=100):
-        """Procesa una imagen completa"""
+    def process_image(self, image_path, output_dir, num_colors=8, target_width_mm=100, scale=Config.DEFAULT_SCALE):
+        """Procesa una imagen completa
+
+        Args:
+            image_path: Ruta de la imagen a procesar
+            output_dir: Carpeta de salida
+            num_colors: Número de colores a extraer
+            target_width_mm: Ancho objetivo en milímetros
+            scale: Milímetros por píxel
+        """
         print(f"Procesando imagen: {image_path}")
 
         # Crear directorio de salida
         os.makedirs(output_dir, exist_ok=True)
 
+        # Convertir ancho en mm a píxeles
+        target_width_px = max(1, int(target_width_mm / scale))
+
         # Cargar imagen
-        image_array = self.load_image(image_path, target_width)
+        image_array = self.load_image(image_path, target_width_px)
         if image_array is None:
             return
 
@@ -296,10 +308,10 @@ class HueForgeConverter:
         # Crear STLs
         print("Generando archivos STL...")
         combined_stl = os.path.join(output_dir, "combined_model.stl")
-        self.create_combined_stl(layers, combined_stl)
+        self.create_combined_stl(layers, combined_stl, scale)
 
         individual_dir = os.path.join(output_dir, "individual_layers")
-        self.create_individual_stls(layers, individual_dir)
+        self.create_individual_stls(layers, individual_dir, scale)
 
         # Guardar información de capas
         info_path = os.path.join(output_dir, "layer_info.txt")
@@ -332,7 +344,8 @@ def main():
         image_path=image_path,
         output_dir=output_dir,
         num_colors=6,
-        target_width=80
+        target_width_mm=80,
+        scale=Config.DEFAULT_SCALE,
     )
 
 

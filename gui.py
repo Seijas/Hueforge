@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from tkinter import colorchooser
+from config import Config
 import os
 from pathlib import Path
 
@@ -42,8 +43,8 @@ class HueForgeGUI:
         ttk.Entry(config_frame, textvariable=self.num_colors_var, width=10).grid(row=0, column=1, sticky=tk.W, padx=5)
 
         # Ancho objetivo
-        ttk.Label(config_frame, text="Ancho objetivo (px):").grid(row=1, column=0, sticky=tk.W)
-        self.width_var = tk.StringVar(value="100")
+        ttk.Label(config_frame, text="Ancho objetivo (mm):").grid(row=1, column=0, sticky=tk.W)
+        self.width_var = tk.StringVar(value=str(Config.DEFAULT_TARGET_WIDTH_MM))
         ttk.Entry(config_frame, textvariable=self.width_var, width=10).grid(row=1, column=1, sticky=tk.W, padx=5)
 
         # Grosor base
@@ -89,7 +90,7 @@ class HueForgeGUI:
         try:
             # Obtener parámetros
             num_colors = int(self.num_colors_var.get())
-            target_width = int(self.width_var.get())
+            target_width_mm = float(self.width_var.get())
             base_thickness = float(self.base_thickness_var.get())
             max_height = float(self.max_height_var.get())
 
@@ -112,7 +113,8 @@ class HueForgeGUI:
                 image_path=self.image_path,
                 output_dir=output_dir,
                 num_colors=num_colors,
-                target_width=target_width
+                target_width_mm=target_width_mm,
+                scale=Config.DEFAULT_SCALE
             )
 
             self.progress_bar.stop()
