@@ -116,7 +116,8 @@ class HueForgeGUI:
             self.root.update()
 
             # Procesar
-            output_dir = f"output_{Path(self.image_path).stem}"
+            from utils import create_output_directory
+            output_dir = create_output_directory(self.image_path, Config.OUTPUT_DIR)
             converter.process_image(
                 image_path=self.image_path,
                 output_dir=output_dir,

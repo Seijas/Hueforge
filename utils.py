@@ -67,3 +67,31 @@ G28 ; home all axes
 M190 S{bed_temp} ; set bed temperature
 M109 S{nozzle_temp} ; set nozzle temperature
 """
+
+
+def create_output_directory(image_path, root_dir):
+    """Crea la carpeta de salida siguiendo la estructura solicitada.
+
+    Args:
+        image_path (str): Ruta de la imagen original.
+        root_dir (str): Carpeta base de salida.
+
+    Returns:
+        str: Ruta completa de la carpeta de salida generada.
+    """
+    from datetime import datetime
+    from pathlib import Path
+
+    date_folder = datetime.now().strftime("%y%m%d")
+    base_dir = Path(root_dir) / date_folder
+    base_dir.mkdir(parents=True, exist_ok=True)
+
+    image_name = Path(image_path).stem
+    output_dir = base_dir / image_name
+    counter = 1
+    while output_dir.exists():
+        output_dir = base_dir / f"{image_name}({counter})"
+        counter += 1
+
+    output_dir.mkdir()
+    return str(output_dir)
