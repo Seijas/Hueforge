@@ -342,7 +342,8 @@ def main():
 
     # Procesar imagen
     image_path = "input_image.jpg"  # Cambiar por tu imagen
-    output_dir = "output_hueforge"
+    from utils import create_output_directory
+    output_dir = create_output_directory(image_path, Config.OUTPUT_DIR)
 
     converter.process_image(
         image_path=image_path,

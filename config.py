@@ -17,5 +17,5 @@ class Config:
     SUPPORTED_FORMATS = ['.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.webp']
 
     # Configuración de salida
-    OUTPUT_DIR = "output_hueforge"
+    OUTPUT_DIR = "output"
     VISUALIZATION_DPI = 300
