@@ -264,7 +264,7 @@ class HueForgeConverter:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
         plt.show()
 
-    def process_image(self, image_path, output_dir, num_colors=8, target_width_mm=100, scale=Config.DEFAULT_SCALE):
+    def process_image(self, image_path, output_dir, num_colors=8, target_width_mm=100, scale=Config.DEFAULT_SCALE, enforce_bw=False):
         """Procesa una imagen completa
 
         Args:
@@ -273,6 +273,7 @@ class HueForgeConverter:
             num_colors: Número de colores a extraer
             target_width_mm: Ancho objetivo en milímetros
             scale: Milímetros por píxel
+            enforce_bw: Si es True, fuerza la primera capa en negro y la última en blanco
         """
         print(f"Procesando imagen: {image_path}")
 
@@ -298,6 +299,10 @@ class HueForgeConverter:
         # Crear capas
         print("Generando capas...")
         layers = self.create_layers(height_map, colors, color_map)
+
+        if enforce_bw and layers:
+            layers[0]['color'] = np.array([0, 0, 0])
+            layers[-1]['color'] = np.array([255, 255, 255])
 
         # Visualizar
         print("Generando visualización...")
@@ -342,7 +347,7 @@ def main():
     converter.process_image(
         image_path=image_path,
         output_dir=output_dir,
-        num_colors=6,
+        num_colors=Config.DEFAULT_NUM_COLORS,
         target_width_mm=80,
         scale=Config.DEFAULT_SCALE,
     )

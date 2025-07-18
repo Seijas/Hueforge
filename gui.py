@@ -39,8 +39,16 @@ class HueForgeGUI:
 
         # Número de colores
         ttk.Label(config_frame, text="Número de colores:").grid(row=0, column=0, sticky=tk.W)
-        self.num_colors_var = tk.StringVar(value="8")
+        self.num_colors_var = tk.StringVar(value=str(Config.DEFAULT_NUM_COLORS))
         ttk.Entry(config_frame, textvariable=self.num_colors_var, width=10).grid(row=0, column=1, sticky=tk.W, padx=5)
+
+        # Checkbox Default Black/White
+        self.default_bw_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(
+            config_frame,
+            text="Default Black/White",
+            variable=self.default_bw_var
+        ).grid(row=0, column=2, sticky=tk.W, padx=10)
 
         # Ancho objetivo
         ttk.Label(config_frame, text="Ancho objetivo (mm):").grid(row=1, column=0, sticky=tk.W)
@@ -114,7 +122,8 @@ class HueForgeGUI:
                 output_dir=output_dir,
                 num_colors=num_colors,
                 target_width_mm=target_width_mm,
-                scale=Config.DEFAULT_SCALE
+                scale=Config.DEFAULT_SCALE,
+                enforce_bw=self.default_bw_var.get()
             )
 
             self.progress_bar.stop()
